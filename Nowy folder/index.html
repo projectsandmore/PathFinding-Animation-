@@ -1,0 +1,353 @@
+<!doctype html>
+<html>
+<body>
+<div>PathFinding Algoritms Animation (Add obstacles by pressing in DisplayBoard)</div>
+<div onClick={BFS()} id="BFS" style="height:30px;width:100px;background-color:yellow">BFS</div>
+<div onClick={SearchA_()} id="A" style="height:30px;width:100px;background-color:yellow">A</div>
+<canvas style="position:relative;top:20px;" width = "570" height = "570" id = "my_Canvas"></canvas>
+
+
+
+<script>
+
+   var w = window.screen.width, h=window.screen.height;
+   var canvas = document.getElementById('my_Canvas');
+   var menu = document.getElementById("menu");
+
+   var PrimaryButton = false;
+
+   canvas.width = w;
+   canvas.height = h;
+   var realPos = canvas.getBoundingClientRect();
+
+   var context = canvas.getContext('2d');
+
+
+
+
+   var rect = 35;
+   var startx = 10, starty = 7;
+   var targetx = 6, targety =2;
+   var points = [[25,12]];
+   var xy = [];
+   var accessible = [];
+   var foundXYs = [];
+   var blocks = [];
+   var found = false;
+
+   var buttons = [["BFS",20,h+realPos.top+30,100,30]]
+
+
+   for(var i=0; i< h/rect; i++){
+      let width = [];
+      for(var j=0; j< w/rect; j++){
+         width[j] = 1;
+      }
+      xy[i] = width;
+   }
+
+
+   var que = [];
+   que.push([startx-1,starty]);
+   que.push([startx,starty-1]);
+   que.push([startx+1,starty]);
+   var loops= 0;
+
+   function isIn(array, variable)
+   {
+
+      for(var i=0; i< array.length; i++){
+
+         if(array[i][0] == variable[0] && array[i][1] == variable[1]) {
+            return true;
+
+         }
+
+      }
+
+      return false;
+
+
+   }
+
+   function arrayDelete(array, variable){
+      for(var i = 0; i< array.length; i++){
+         if(array[i][0] == variable[0] && array[i][1] == variable[1]){
+            array.splice(i,1);
+            return(array);
+         }
+      }
+      return(array);
+
+   }
+
+   function BFS_ADD(els,que){
+      var checkAll = [[-1,0],[1,0],[0,1],[0,-1]]
+      var temp;
+      for(_move of checkAll) {
+         temp = [(els[0]+_move[0]),(els[1]+_move[1])]
+         if (isIn(accessible, temp) == false && isIn(que, temp) == false) {
+            if(temp[0] > 0 && temp[0] < (w/rect)-1 &&
+                    temp[1] < (h/rect)-1 && temp[1] > 0) {
+               que.push(temp);
+            }
+         }
+      }
+
+      return(que);
+   }
+
+
+
+   function BFS(){
+      accessible = [];
+      foundXYs = [];
+      var Queue = [];
+      Queue.push([startx-1,starty]);
+      Queue.push([startx,starty-1]);
+      Queue.push([startx+1,starty]);
+      Queue.push([startx,starty+1]);
+
+      while(Queue.length > 0 && foundXYs.length < points.length)
+      {
+         var firstEl = Queue.shift();
+
+
+         if(isIn(blocks, firstEl) == false) {
+            Queue = BFS_ADD(firstEl,Queue);
+            accessible.push(firstEl);
+         }
+         if(isIn(points, firstEl) == true && isIn(foundXYs, firstEl) == false)
+         {
+            foundXYs.push(firstEl);
+            continue;
+
+         }
+      }
+      Draw();
+
+   }
+
+   function A_sort(queue){
+      for(var x = 0 ; x < queue.length-1; x++)
+      {
+         for(var j = x+1; j<queue.length; j++){
+            if(queue[j][2] < queue[x][2]){
+               var temp3 = queue[x];
+               queue[x] = queue[j];
+               queue[j] = temp3;
+            }
+         }
+
+
+      }
+      return(queue);
+
+
+   }
+
+   function A_add(x,y,queue,destine,History){
+      var cost,rest,travel;
+
+
+      var checkAll = [[-1,0],[1,0],[0,1],[0,-1]]
+      var tempo2;
+      for(_move of checkAll) {
+         tempo2 = [(x+_move[0]),(y+_move[1])]
+         cost = Math.abs(tempo2[0] - startx) + Math.abs(tempo2[1] - starty)
+         rest = Math.abs(destine[0] - tempo2[0]) + Math.abs(tempo2[1] - destine[1])
+         travel = cost + rest;
+
+         tempo2 = [tempo2[0],tempo2[1],travel]
+         if (isIn(accessible, tempo2) == false && isIn(queue, tempo2) == false && isIn(History, tempo2) == false) {
+            if(tempo2[0] > 0 && tempo2[0] < (w/rect)-1 &&
+                    tempo2[1] < (h/rect)-1 && tempo2[1] > 0) {
+               queue.push(tempo2);
+            }
+         }
+      }
+
+      return(queue)
+
+   }
+
+
+
+   function SearchA_()
+   {
+      accessible = [];
+
+
+      var Queue = [];
+      var History = [];
+      Queue = A_add(startx,starty,Queue,points[0],History);
+
+      Queue = A_sort(Queue);
+
+      while(Queue.length > 0 ){
+         var firstel2 = Queue.shift();
+
+
+         if(isIn(blocks, firstel2) == false) {
+            Queue = A_add(firstel2[0],firstel2[1],Queue,points[0],History);
+            Queue = A_sort(Queue);
+            accessible.push(firstel2)
+         }
+
+
+
+         if(isIn(points,firstel2) == true){
+            break;
+         }
+
+
+      }
+
+      Draw();
+
+
+
+
+   }
+
+
+
+
+
+   function asd(que,points){
+      if(found == false){
+         while(que.length > 0 && accessible.length != points.length){
+            var queEl = que.shift();
+
+
+            for(var p in points)
+            {
+               if(queEl[0] == p[0] && queEl[1] == p[1] && isIn(accessible,p) == false){
+                  accessible.push([queEl[0],queEl[1]] );
+                  //points.push([queEl[0],queEl[1]]);
+                  found = true;
+               }
+            }
+
+
+            if(xy[queEl[1]][queEl[0]] == null){
+               //continue;
+            }
+
+            accessible.push([queEl[0],queEl[1]]);
+            points.push([queEl[0],queEl[1]]);
+
+            let left = [queEl[0]-1,queEl[1]]
+            if(queEl[0]-1 > 0 && isIn(que,[queEl[0]-1,queEl[1]]) == false){
+               que.push([queEl[0]-1,queEl[1]]);
+            }
+            if(queEl[1]-1 > 0 && isIn(que,[queEl[0],queEl[1]-1])  == false){
+               que.push([queEl[0],queEl[1]-1]);
+            }
+            if(queEl[0]+1 < xy[0].length && isIn(que,[queEl[0]+1,queEl[1]])  == false){
+               que.push([queEl[0]+1,queEl[1]]);
+            }
+            if(queEl[1]+1 < xy.length && isIn(que,[queEl[0],queEl[1]+1])  == false){
+               que.push([queEl[0],queEl[1]+1]);
+            }
+            if(que.length == 0){
+               found = true;
+            }
+
+
+         }
+      }
+   }
+
+   function Draw(){
+      for(var i=0; i< h/rect; i++){
+
+         for(var j=0; j< (w/rect)-1; j++){
+            context.fillStyle = "rgb(255,0,0)";
+            context.fillRect(j*rect, i*rect, rect, rect);
+            context.fillStyle = "rgb(0,0,0)";
+            context.fillRect(j*rect+1, i*rect+1,rect-2,rect-2);
+
+            for(var x=0; x<accessible.length; x++){
+
+               if(j == accessible[x][0] && i == accessible[x][1]){
+                  context.fillStyle = "rgb(255,0,0)";
+                  context.fillRect(j*rect, i*rect, rect, rect);
+                  context.fillStyle = "rgb(150,200,0)";
+                  context.fillRect(j*rect+1, i*rect+1,rect-2,rect-2);
+               }
+            }
+            for(var x=0; x<points.length; x++){
+
+               if(j == points[x][0] && i == points[x][1]){
+                  context.fillStyle = "rgb(255,0,0)";
+                  context.fillRect(j*rect, i*rect, rect, rect);
+                  context.fillStyle = "rgb(150,0,0)";
+                  context.fillRect(j*rect+1, i*rect+1,rect-2,rect-2);
+               }
+            }
+
+            for(var x=0; x<blocks.length; x++){
+
+               if(j == blocks[x][0] && i == blocks[x][1]){
+                  context.fillStyle = "rgb(255,0,0)";
+                  context.fillRect(j*rect, i*rect, rect, rect);
+                  context.fillStyle = "rgb(40,30,0)";
+                  context.fillRect(j*rect+1, i*rect+1,rect-2,rect-2);
+               }
+            }
+
+
+
+            if(j == startx && i == starty)
+            {
+               context.fillStyle = "rgb(255,0,0)";
+               context.fillRect(j*rect, i*rect, rect, rect);
+               context.fillStyle = "rgb(150,100,0)";
+               context.fillRect(j*rect+1, i*rect+1,rect-2,rect-2);
+
+            }
+         }
+      }
+
+
+
+   }
+
+   function addBlok(ev){
+      var y = ev.clientY
+      var x = ev.clientX
+
+      var DrawOff = canvas.getBoundingClientRect();
+
+      if(ev.target.id == "my_Canvas" && PrimaryButton == true) {
+
+         var Blok = [Math.floor((x-DrawOff.left) / rect), Math.floor((y - DrawOff.top) / rect)]
+         if (isIn(blocks, Blok) == false) {
+            blocks.push(Blok);
+            Draw();
+         }
+
+      }
+
+   }
+
+
+
+   document.addEventListener("mousedown",function(){PrimaryButton = true})
+   document.addEventListener("mouseup",function(){PrimaryButton = false})
+
+   document.addEventListener("mousemove",function(){addBlok(event)})
+
+
+
+
+   SearchA_();
+   //BFS();
+   Draw();
+
+
+
+</script>
+</body>
+</html>
