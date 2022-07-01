@@ -83,9 +83,9 @@ Main(){
     BFS_ADD(els,que){
         var checkAll = [[-1,0],[1,0],[0,1],[0,-1]]
         var temp;
-        for(_move of checkAll) {
+        for(let _move of checkAll) {
             temp = [(els[0]+_move[0]),(els[1]+_move[1])]
-            if (isIn(this.accessible, temp) == false && isIn(que, temp) == false) {
+            if (this.isIn(this.accessible, temp) == false && this.isIn(que, temp) == false) {
                 if(temp[0] > 0 && temp[0] < (this.w/this.rect)-1 &&
                     temp[1] < (this.h/this.rect)-1 && temp[1] > 0) {
                     que.push(temp);
@@ -100,6 +100,7 @@ Main(){
 
     BFS(){
         this.accessible = [];
+        console.log("21123")
         this.foundXYs = [];
         var Queue = [];
         Queue.push([this.startx-1,this.starty]);
@@ -112,11 +113,11 @@ Main(){
             var firstEl = Queue.shift();
 
 
-            if(isIn(this.blocks, firstEl) == false) {
-                Queue = BFS_ADD(firstEl,Queue);
-                this.ccessible.push(firstEl);
+            if(this.isIn(this.blocks, firstEl) == false) {
+                Queue = this.BFS_ADD(firstEl,Queue);
+                this.accessible.push(firstEl);
             }
-            if(isIn(this.points, firstEl) == true && isIn(this.foundXYs, firstEl) == false)
+            if(this.isIn(this.points, firstEl) == true && this.isIn(this.foundXYs, firstEl) == false)
             {
                 this.foundXYs.push(firstEl);
                 continue;
@@ -151,14 +152,14 @@ Main(){
 
         var checkAll = [[-1,0],[1,0],[0,1],[0,-1]]
         var tempo2;
-        for(_move of checkAll) {
+        for(let _move of checkAll) {
             tempo2 = [(x+_move[0]),(y+_move[1])]
             cost = Math.abs(tempo2[0] - this.startx) + Math.abs(tempo2[1] - this.starty)
             rest = Math.abs(destine[0] - tempo2[0]) + Math.abs(tempo2[1] - destine[1])
             travel = cost + rest;
 
             tempo2 = [tempo2[0],tempo2[1],travel]
-            if (isIn(this.accessible, tempo2) == false && isIn(queue, tempo2) == false && isIn(History, tempo2) == false) {
+            if (this.isIn(this.accessible, tempo2) == false && this.isIn(queue, tempo2) == false && this.isIn(History, tempo2) == false) {
                 if(tempo2[0] > 0 && tempo2[0] < (this.w/this.rect)-1 &&
                     tempo2[1] < (this.h/this.rect)-1 && tempo2[1] > 0) {
                     queue.push(tempo2);
@@ -179,23 +180,23 @@ Main(){
 
         var Queue = [];
         var History = [];
-        Queue = A_add(this.startx,this.starty,Queue,this.points[0],History);
+        Queue = this.A_add(this.startx,this.starty,Queue,this.points[0],History);
 
-        Queue = A_sort(Queue);
+        Queue = this.A_sort(Queue);
 
         while(Queue.length > 0 ){
             var firstel2 = Queue.shift();
 
 
-            if(isIn(this.blocks, firstel2) == false) {
-                Queue = A_add(firstel2[0],firstel2[1],Queue,this.points[0],History);
-                Queue = A_sort(Queue);
+            if(this.isIn(this.blocks, firstel2) == false) {
+                Queue = this.A_add(firstel2[0],firstel2[1],Queue,this.points[0],History);
+                Queue = this.A_sort(Queue);
                 this.accessible.push(firstel2)
             }
 
 
 
-            if(isIn(this.points,firstel2) == true){
+            if(this.isIn(this.points,firstel2) == true){
                 break;
             }
 

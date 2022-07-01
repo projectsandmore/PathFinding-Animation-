@@ -4,8 +4,11 @@ import Sorting from './Sorting.js';
 
 var Sorting2 = new Sorting();
 
-document.getElementById("BFS").addEventListener("click",Sorting2.BFS())
-document.getElementById("A").addEventListener("click",Sorting2.SearchA_())
+
+console.log(Sorting2.xy)
+document.getElementById("BFS").addEventListener("click",function(){Sorting2.BFS()})
+document.getElementById("A").addEventListener("click",function(){Sorting2.SearchA_()})
+
 
 
 document.addEventListener("mousedown",function(){Sorting2.PrimaryButton = true;Sorting2.addBlok(event);})
