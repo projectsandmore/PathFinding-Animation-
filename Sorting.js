@@ -24,8 +24,26 @@ class Sorting{
         this.CanvasGUI.Draw(this.accessible, this.points, this.blocks);
 
 
-
+        this.MouseHistory = false;
+        this.MouseMode = 'none';
     }
+
+
+
+    removeArr(array, val){
+        var newArray = [];
+        for(let elem of array){
+            if(elem[0] != val[0] || elem[1] != val[1]){
+                newArray.push(elem);
+            }
+        }
+        return(newArray);
+    }
+
+    releaseMouse(){
+        this.MouseMode = 'none';
+    }
+
 
     addBlok(ev){
         var y = ev.clientY
@@ -35,8 +53,19 @@ class Sorting{
         if(ev.target.id == "my_Canvas" && this.PrimaryButton == true) {
 
             var Blok = [Math.floor((x-DrawOff.left) / this.rect), Math.floor((y - DrawOff.top) / this.rect)]
-            if (this.isIn(this.blocks, Blok) == false) {
-                this.blocks.push(Blok);
+
+            if(this.MouseHistory[0] != Blok[0] || this.MouseHistory[1] != Blok[1]) {
+                this.MouseHistory = Blok;
+                if (this.isIn(this.blocks, Blok) == false) {
+                    this.MouseMode = 'add';
+                    this.blocks.push(Blok);
+                    console.log(this.blocks);
+                } else {
+                    if(this.MouseMode == 'none'){
+                        this.blocks = this.removeArr(this.blocks, Blok);
+                    }
+
+                }
                 this.CanvasGUI.Draw(this.accessible, this.points, this.blocks);
             }
 

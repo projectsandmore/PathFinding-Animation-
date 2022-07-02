@@ -15,10 +15,10 @@ class CanvasGUI {
         this.context = this.canvas.getContext('2d');
 
 
-        this.rect = 35;
+        this.rect = 20;
         this.startx = 10;
         this.starty = 7;
-        this.points = [[25,12]];
+        this.points = [[45,12]];
 
 
         this.buttons = [["BFS",20,this.h+this.realPos.top+30,100,30]]
@@ -35,15 +35,15 @@ class CanvasGUI {
         for(var i=0; i< this.h/this.rect; i++){
 
             for(var j=0; j< (this.w/this.rect)-1; j++){
-                this.context.fillStyle = "rgb(255,0,0)";
-                this.context.fillRect(j*this.rect, i*this.rect, this.rect, this.rect);
                 this.context.fillStyle = "rgb(0,0,0)";
+                this.context.fillRect(j*this.rect, i*this.rect, this.rect, this.rect);
+                this.context.fillStyle = "rgb(255,255,255)";
                 this.context.fillRect(j*this.rect+1, i*this.rect+1,this.rect-2,this.rect-2);
 
                 for(var x=0; x<accessible.length; x++){
 
                     if(j == accessible[x][0] && i == accessible[x][1]){
-                        this.context.fillStyle = "rgb(255,0,0)";
+                        this.context.fillStyle = "rgb(0,0,0)";
                         this.context.fillRect(j*this.rect, i*this.rect, this.rect, this.rect);
                         this.context.fillStyle = "rgb(150,200,0)";
                         this.context.fillRect(j*this.rect+1, i*this.rect+1,this.rect-2,this.rect-2);
@@ -52,7 +52,7 @@ class CanvasGUI {
                 for(var x=0; x<points.length; x++){
 
                     if(j == points[x][0] && i == points[x][1]){
-                        this.context.fillStyle = "rgb(255,0,0)";
+                        this.context.fillStyle = "rgb(0,0,0)";
                         this.context.fillRect(j*this.rect, i*this.rect, this.rect, this.rect);
                         this.context.fillStyle = "rgb(150,0,0)";
                         this.context.fillRect(j*this.rect+1, i*this.rect+1,this.rect-2,this.rect-2);
@@ -62,7 +62,7 @@ class CanvasGUI {
                 for(var x=0; x<blocks.length; x++){
 
                     if(j == blocks[x][0] && i == blocks[x][1]){
-                        this.context.fillStyle = "rgb(255,0,0)";
+                        this.context.fillStyle = "rgb(0,0,0)";
                         this.context.fillRect(j*this.rect, i*this.rect, this.rect, this.rect);
                         this.context.fillStyle = "rgb(40,30,0)";
                         this.context.fillRect(j*this.rect+1, i*this.rect+1,this.rect-2,this.rect-2);
@@ -73,7 +73,7 @@ class CanvasGUI {
 
                 if(j == this.startx && i == this.starty)
                 {
-                    this.context.fillStyle = "rgb(255,0,0)";
+                    this.context.fillStyle = "rgb(0,0,0)";
                     this.context.fillRect(j*this.rect, i*this.rect, this.rect, this.rect);
                     this.context.fillStyle = "rgb(150,100,0)";
                     this.context.fillRect(j*this.rect+1, i*this.rect+1,this.rect-2,this.rect-2);
